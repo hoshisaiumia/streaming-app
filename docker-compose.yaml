@@ -1,5 +1,6 @@
 services:
   web:
+    profiles: ["prod"]
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,9 +9,13 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=postgresql://localhost:localhost@db:5432/streamingapp
     env_file:
       - .env
+    depends_on:
+      - db
     restart: unless-stopped
+
   db:
     image: postgres:17
     container_name: database
@@ -23,5 +28,6 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
 volumes:
   pgdata:
